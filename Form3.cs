@@ -107,9 +107,9 @@ namespace StudentsInformationSystem
 
         private void btn_Delete(object sender, EventArgs e)
         {
-            if (Students_Information.CurrentRow != null)
+            string studentNo = GetSelectedStudentNo();
+            if (!string.IsNullOrWhiteSpace(studentNo))
             {
-                
                 DialogResult result = MessageBox.Show("Are you sure you want to delete this record?",
                                                       "Confirm Delete",
                                                       MessageBoxButtons.YesNo,
@@ -117,19 +117,9 @@ namespace StudentsInformationSystem
 
                 if (result == DialogResult.Yes)
                 {
-                    DataGridViewRow selectedRow = Students_Information.CurrentRow;
-                    if (selectedRow == null || selectedRow.Cells["StudentNumber"] == null)
-                    {
-                        MessageBox.Show("Unable to resolve selected student.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-
-                    string studentNo = Convert.ToString(selectedRow.Cells["StudentNumber"].Value);
                     DataStorage.RemoveStudent(studentNo);
 
-                    
                     pb_savephoto.Image = null;
-
                     RefreshSummaryView();
 
                     MessageBox.Show("Record successfully deleted.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -145,21 +135,9 @@ namespace StudentsInformationSystem
 
         private void btn_back_Click(object sender, EventArgs e)
         {
-            Form1 f1 = (Form1)Application.OpenForms["Form1"];
-
-            if (f1 != null)
-            {
-                
-                f1.Show();
-                this.Hide();
-            }
-            else
-            {
-                
-                Form1 newF1 = new Form1();
-                newF1.Show();
-                this.Hide();
-            }
+            Form1 newF1 = new Form1();
+            newF1.Show();
+            Hide();
         }
 
         private void btn_update_Click(object sender, EventArgs e)

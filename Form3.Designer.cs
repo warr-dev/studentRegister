@@ -118,7 +118,7 @@ namespace StudentsInformationSystem
             this.btn_back.Name = "btn_back";
             this.btn_back.Size = new System.Drawing.Size(75, 23);
             this.btn_back.TabIndex = 7;
-            this.btn_back.Text = "Back";
+            this.btn_back.Text = "Add";
             this.btn_back.UseVisualStyleBackColor = true;
             this.btn_back.Click += new System.EventHandler(this.btn_back_Click);
             // 

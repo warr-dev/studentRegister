@@ -51,7 +51,7 @@ namespace StudentsInformationSystem
             return table;
         }
 
-        public static void AddStudentForm1(
+        public static StudentProfile AddStudentForm1(
             string studentNumber,
             string studentName,
             string sex,
@@ -79,7 +79,7 @@ namespace StudentsInformationSystem
                 skills
             );
 
-            StudentList.Add(new StudentProfile
+            StudentProfile created = new StudentProfile
             {
                 StudentNo = studentNumber,
                 Name = studentName,
@@ -93,7 +93,78 @@ namespace StudentsInformationSystem
                 Phone = phoneNumber,
                 Skills = skills,
                 Photo = photo
-            });
+            };
+
+            StudentList.Add(created);
+            return created;
+        }
+
+        public static StudentProfile UpdateStudentForm1(
+            string originalStudentNo,
+            string studentNumber,
+            string studentName,
+            string sex,
+            int age,
+            System.DateTime birthday,
+            string status,
+            string year,
+            string addressCity,
+            string email,
+            string phoneNumber,
+            string skills,
+            Image photo)
+        {
+            StudentProfile profile = StudentList.FirstOrDefault(s => s.StudentNo == originalStudentNo);
+            if (profile == null)
+            {
+                return AddStudentForm1(studentNumber, studentName, sex, age, birthday, status, year, addressCity, email, phoneNumber, skills, photo);
+            }
+
+            profile.StudentNo = studentNumber;
+            profile.Name = studentName;
+            profile.Sex = sex;
+            profile.Age = age;
+            profile.Birthday = birthday.ToString("yyyy-MM-dd");
+            profile.Status = status;
+            profile.Year = year;
+            profile.Address = addressCity;
+            profile.Email = email;
+            profile.Phone = phoneNumber;
+            profile.Skills = skills;
+            profile.Photo = photo;
+
+            DataRow row = StudentsTable.AsEnumerable()
+                .FirstOrDefault(r => string.Equals(r.Field<string>("StudentNumber"), originalStudentNo));
+
+            if (row == null)
+            {
+                StudentsTable.Rows.Add(studentNumber, studentName, sex, age, birthday, status, year, addressCity, email, phoneNumber, skills);
+            }
+            else
+            {
+                row["StudentNumber"] = studentNumber;
+                row["StudentName"] = studentName;
+                row["Sex"] = sex;
+                row["Age"] = age;
+                row["Birthday"] = birthday;
+                row["Status"] = status;
+                row["Year"] = year;
+                row["AddressCity"] = addressCity;
+                row["Email"] = email;
+                row["PhoneNumber"] = phoneNumber;
+                row["Skills"] = skills;
+            }
+
+            if (!string.Equals(originalStudentNo, studentNumber))
+            {
+                DataRow[] familyRows = FamilyMembersTable.Select("StudentNo = '" + originalStudentNo.Replace("'", "''") + "'");
+                foreach (DataRow familyRow in familyRows)
+                {
+                    familyRow["StudentNo"] = studentNumber;
+                }
+            }
+
+            return profile;
         }
 
         public static void ReplaceFamilyMembers(string studentNo, List<FamilyMember> members)

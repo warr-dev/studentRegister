@@ -14,6 +14,8 @@ namespace StudentsInformationSystem
     {
         ErrorProvider errorProvider = new ErrorProvider();
         private StudentProfile _currentProfile;
+        private bool _isEditMode;
+        private string _originalStudentNo = string.Empty;
         public Form1()
         {
             InitializeComponent();
@@ -33,6 +35,8 @@ namespace StudentsInformationSystem
         public Form1(StudentProfile profile) : this()
         {
             _currentProfile = profile;
+            _isEditMode = profile != null;
+            _originalStudentNo = profile != null ? profile.StudentNo : string.Empty;
             LoadProfile(profile);
         }
 
@@ -365,25 +369,56 @@ namespace StudentsInformationSystem
 
         private void SaveCurrentStudentToTable()
         {
+            string studentNo = txt_student_number.Text.Trim();
+            string studentName = txt_name_of_student.Text.Trim();
             string selectedSex = rbtn_female.Checked ? "Female" : "Male";
+            int age = (int)nud_age.Value;
+            DateTime birthday = dtp_birthday.Value.Date;
+            string status = cb_status.Text.Trim();
+            string year = cb_year.Text.Trim();
+            string address = txt_address_city.Text.Trim();
+            string email = txt_email.Text.Trim();
+            string phone = txt_phone_number.Text.Trim();
             string selectedSkills = string.Join(", ", GetSelectedSkills());
 
-            DataStorage.AddStudentForm1(
-                txt_student_number.Text.Trim(),
-                txt_name_of_student.Text.Trim(),
-                selectedSex,
-                (int)nud_age.Value,
-                dtp_birthday.Value.Date,
-                cb_status.Text.Trim(),
-                cb_year.Text.Trim(),
-                txt_address_city.Text.Trim(),
-                txt_email.Text.Trim(),
-                txt_phone_number.Text.Trim(),
-                selectedSkills,
-                p_b_student.Image
-            );
-
-            _currentProfile = DataStorage.StudentList.LastOrDefault();
+            if (_isEditMode && !string.IsNullOrWhiteSpace(_originalStudentNo))
+            {
+                _currentProfile = DataStorage.UpdateStudentForm1(
+                    _originalStudentNo,
+                    studentNo,
+                    studentName,
+                    selectedSex,
+                    age,
+                    birthday,
+                    status,
+                    year,
+                    address,
+                    email,
+                    phone,
+                    selectedSkills,
+                    p_b_student.Image
+                );
+                _originalStudentNo = _currentProfile != null ? _currentProfile.StudentNo : _originalStudentNo;
+            }
+            else
+            {
+                _currentProfile = DataStorage.AddStudentForm1(
+                    studentNo,
+                    studentName,
+                    selectedSex,
+                    age,
+                    birthday,
+                    status,
+                    year,
+                    address,
+                    email,
+                    phone,
+                    selectedSkills,
+                    p_b_student.Image
+                );
+                _isEditMode = true;
+                _originalStudentNo = _currentProfile != null ? _currentProfile.StudentNo : studentNo;
+            }
         }
 
         private List<string> GetSelectedSkills()
