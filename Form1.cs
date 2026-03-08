@@ -70,7 +70,6 @@ namespace StudentsInformationSystem
         {
             int age = (int)nud_age.Value;
             dtp_birthday.Value = DateTime.Today.AddYears(-age);
-
         }
 
         private void dtp_birthday_ValueChanged(object sender, EventArgs e)
@@ -221,6 +220,12 @@ namespace StudentsInformationSystem
             if (nud_age.Value <= 0)
             {
                 errorProvider.SetError(nud_age, "Age must be greater than 0.");
+                isValid = false;
+            }
+
+            if (nud_age.Value < 15 || nud_age.Value > 50)
+            {
+                errorProvider.SetError(nud_age, "Age must beetween 15 and 50.");
                 isValid = false;
             }
 
