@@ -296,6 +296,7 @@ namespace StudentsInformationSystem
             this.nud_age.Size = new System.Drawing.Size(89, 20);
             this.nud_age.TabIndex = 16;
             this.nud_age.ValueChanged += new System.EventHandler(this.nud_age_ValueChanged);
+            this.nud_age.KeyUp += new System.Windows.Forms.KeyEventHandler(this.nud_age_KeyUp);
             // 
             // rbtn_male
             // 

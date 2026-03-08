@@ -522,5 +522,14 @@ namespace StudentsInformationSystem
             BeginInvoke((Action)(() => target.Focus()));
         }
 
+        private void nud_age_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (nud_age.Value < 15 || nud_age.Value > 50)
+            {
+                errorProvider.SetError(nud_age, "Age must beetween 15 and 50.");
+            }
+            else
+                errorProvider.SetError(nud_age, "");
+        }
     }
 }
